@@ -20,9 +20,8 @@ void setup()
 }
 
 void loop() {
-  // Wi-Fiの接続が切れている場合は何もせずに1秒待機します
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("WiFi Disconnected");
+  // Wi-Fiの接続が切れている場合は再接続を試みます
+  if (!is_wifi_connected()) {
     delay(1000);
     return;
   }
@@ -56,6 +55,16 @@ void setup_wifi() {
   Serial.println("WiFi connected");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+}
+
+bool is_wifi_connected() {
+  // WiFi接続が切れている場合は再接続を試みます
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi Disconnected");
+    setup_wifi();
+    return false;
+  }
+  return true;
 }
 
 void http_test(String message) {
